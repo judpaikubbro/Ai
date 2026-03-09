@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Health Menu AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Kanit (Thai) + Syne (Display) -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== HERO HEADER ===== -->
+  <header class="hero">
+    <div class="hero-bg-circle circle-1"></div>
+    <div class="hero-bg-circle circle-2"></div>
+    <div class="hero-inner">
+      <div class="logo-badge">AI Powered</div>
+      <h1 class="hero-title">Smart Health<br/><span>Menu AI</span></h1>
+      <p class="hero-sub">วิเคราะห์สุขภาพ · แนะนำโภชนาการ · ปรับแต่งเฉพาะคุณ</p>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container">
+
+    <!-- Health Input Form -->
+    <section class="card form-card">
+      <h2 class="section-title">
+        <span class="icon">📋</span> ข้อมูลสุขภาพของคุณ
+      </h2>
+
+      <div class="form-grid">
+
+        <!-- เพศ -->
+        <div class="form-group">
+          <label>เพศ</label>
+          <div class="gender-toggle">
+            <input type="radio" id="male" name="gender" value="Male" checked />
+            <label for="male" class="toggle-btn">♂ ชาย</label>
+            <input type="radio" id="female" name="gender" value="Female" />
+            <label for="female" class="toggle-btn">♀ หญิง</label>
+          </div>
+        </div>
+
+        <!-- อายุ -->
+        <div class="form-group">
+          <label for="age">อายุ <span class="unit">(ปี)</span></label>
+          <input type="number" id="age" placeholder="เช่น 25" min="1" max="120" />
+        </div>
+
+        <!-- น้ำหนัก -->
+        <div class="form-group">
+          <label for="weight">น้ำหนัก <span class="unit">(กก.)</span></label>
+          <input type="number" id="weight" placeholder="เช่น 65" min="1" max="300" step="0.1" />
+        </div>
+
+        <!-- ส่วนสูง -->
+        <div class="form-group">
+          <label for="height">ส่วนสูง <span class="unit">(ซม.)</span></label>
+          <input type="number" id="height" placeholder="เช่น 170" min="50" max="250" step="0.1" />
+        </div>
+
+        <!-- ระดับการออกกำลังกาย -->
+        <div class="form-group full-width">
+          <label for="activity">ระดับการออกกำลังกาย</label>
+          <select id="activity">
+            <option value="Sedentary">ไม่ค่อยออกกำลังกาย</option>
+            <option value="Light">ออกกำลังกายเล็กน้อย</option>
+            <option value="Moderate" selected>ออกกำลังกายปานกลาง</option>
+            <option value="Heavy">ออกกำลังกายหนัก</option>
+          </select>
+        </div>
+
+        <!-- โรคประจำตัว -->
+        <div class="form-group full-width">
+          <label for="disease">โรคประจำตัว <span class="unit">(ถ้ามี)</span></label>
+          <input type="text" id="disease" placeholder="เช่น เบาหวาน, ความดันโลหิตสูง, ไม่มี" />
+        </div>
+
+      </div>
+
+      <!-- Analyze Button -->
+      <button class="btn-analyze" id="analyzeBtn" onclick="analyzeHealth()">
+        <span class="btn-text">🔍 วิเคราะห์สุขภาพ</span>
+        <span class="btn-loader" id="btnLoader" style="display:none;">⏳ กำลังวิเคราะห์...</span>
+      </button>
+    </section>
+
+    <!-- Health Metrics (แสดงผลหลังคำนวณ) -->
+    <section class="card metrics-card" id="metricsSection" style="display:none;">
+      <h2 class="section-title">
+        <span class="icon">📊</span> ผลการคำนวณสุขภาพ
+      </h2>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">ค่า BMI</div>
+          <div class="metric-value" id="bmiValue">—</div>
+          <div class="metric-status" id="bmiStatus"></div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">BMR (แคลอรี่พื้นฐาน)</div>
+          <div class="metric-value" id="bmrValue">—</div>
+          <div class="metric-unit">kcal/วัน</div>
+        </div>
+        <div class="metric-box highlight">
+          <div class="metric-label">แคลอรี่ที่ควรได้รับ/วัน</div>
+          <div class="metric-value" id="caloriesValue">—</div>
+          <div class="metric-unit">kcal/วัน</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Analysis Results -->
+    <section class="card result-card" id="resultSection" style="display:none;">
+      <h2 class="section-title">
+        <span class="icon">🤖</span> คำแนะนำโภชนาการจาก AI
+      </h2>
+      <div id="aiResult" class="ai-result-content"></div>
+    </section>
+
+    <!-- Error Section -->
+    <section class="card error-card" id="errorSection" style="display:none;">
+      <p id="errorMsg">เกิดข้อผิดพลาด</p>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER DISCLAIMER ===== -->
+  <footer class="footer">
+    <div class="disclaimer">
+      ⚠️ <strong>คำแนะนำนี้สร้างโดย AI เพื่อเป็นข้อมูลเบื้องต้น ไม่สามารถใช้แทนคำแนะนำจากแพทย์ได้</strong>
+    </div>
+    <p class="footer-copy">Smart Health Menu AI © 2025</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
